@@ -1,0 +1,17 @@
+{
+  "name": "Храм Архистратига Михаила в Туапсе",
+  "short_name": "Храм в Туапсе",
+  "description": "Расписание богослужений, праздники, воскресная школа, молодёжное движение и контакты.",
+  "lang": "ru",
+  "start_url": "index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {"src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png"},
+    {"src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png"},
+    {"src": "icons/icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable"}
+  ]
+}
