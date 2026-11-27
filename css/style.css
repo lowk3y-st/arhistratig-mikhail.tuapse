@@ -1,0 +1,675 @@
+/* ==========================================================================
+   Приход Архистратига Божия Михаила, г. Туапсе
+   Только светлая тема: белый фон, бежево-золотые вставки.
+   Классическая композиция: симметрия, гарнитуры с засечками, двойные рамки,
+   орнаментальные разделители. Движение одно: арка с храмом чуть парит.
+   ========================================================================== */
+
+:root {
+  --bg: #FFFFFF;
+  --paper: #FBF7EE;
+  --beige: #F3EBDA;
+  --beige-deep: #E8DCC0;
+  --ink: #2B2519;
+  --ink-soft: #655C47;
+  --gold: #B08D3C;
+  --gold-deep: #8A6A22;
+  --gold-ink: #6B5016; /* тёмное золото для текста на бежевом фоне */
+  --line: rgba(176, 141, 60, 0.42);
+  --shadow: rgba(120, 92, 30, 0.22);
+  --glow: rgba(236, 205, 125, 0.65);
+  --display: 'Cormorant Garamond', 'Times New Roman', serif;
+  --text: 'EB Garamond', Georgia, 'Times New Roman', serif;
+  color-scheme: light only;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 1.125rem/1.7 var(--text);
+  overflow-x: clip;
+}
+a { color: inherit; }
+:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 3px; }
+
+/* Общая колонка: ширина 1100px и боковое поле не меньше 16px */
+.wrap {
+  max-width: 1100px; margin-inline: auto;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+}
+
+/* ---------- Орнамент: линия, ромб, линия ---------- */
+.orn { display: flex; align-items: center; justify-content: center; gap: 12px; margin: 18px auto 0; max-width: 220px; }
+.orn::before, .orn::after { content: ""; flex: 1; height: 1px; background: linear-gradient(90deg, transparent, var(--gold)); }
+.orn::after { background: linear-gradient(270deg, transparent, var(--gold)); }
+.orn i { width: 8px; height: 8px; background: var(--gold); transform: rotate(45deg); flex: none; }
+.orn.left { margin-left: 0; }
+.orn.left::before { display: none; }
+
+/* ---------- Шапка ---------- */
+.top {
+  display: flex; flex-direction: column; align-items: center; text-align: center;
+  padding-top: max(26px, env(safe-area-inset-top, 0px));
+}
+.brand { display: flex; flex-direction: column; align-items: center; gap: 8px; text-decoration: none; }
+.brand svg { width: 20px; height: 36px; }
+.brand b { font: 600 clamp(1.25rem, 3.2vw, 1.7rem)/1.1 var(--display); letter-spacing: 0.16em; text-transform: uppercase; }
+.brand small { font: 500 0.78rem/1.3 var(--text); letter-spacing: 0.3em; text-transform: uppercase; color: var(--gold-deep); }
+.nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 24px; padding-block: 18px 16px; }
+.nav a {
+  text-decoration: none; font: 500 0.78rem/1.2 var(--text); letter-spacing: 0.14em; text-transform: uppercase;
+  color: var(--ink-soft); padding-block: 4px; border-bottom: 1px solid transparent;
+  transition: color .25s, border-color .25s;
+}
+.nav a:hover { color: var(--gold-deep); border-color: var(--gold); }
+.nav a[aria-current="page"] { color: var(--gold-deep); border-color: var(--gold-deep); }
+@media (max-width: 520px) {
+  .nav { gap: 6px 18px; } .nav a { font-size: 0.74rem; letter-spacing: 0.14em; }
+  .brand b { font-size: 1.05rem; letter-spacing: 0.1em; }
+}
+
+/* Выпадающее меню «Богослужения»: открывается при наведении и при фокусе с клавиатуры */
+header.wrap { position: relative; z-index: 40; }
+.nav .has-sub { position: relative; display: flex; }
+.nav .has-sub > a::after {
+  content: ""; display: inline-block; width: 5px; height: 5px; margin-left: 8px;
+  border-right: 1px solid currentColor; border-bottom: 1px solid currentColor;
+  transform: translateY(-2px) rotate(45deg);
+}
+.nav .sub {
+  position: absolute; top: 100%; left: 50%; z-index: 30; min-width: 230px; margin: 0; padding: 6px; list-style: none;
+  background: var(--bg); border: 1px solid var(--line); border-radius: 2px;
+  box-shadow: 0 22px 40px -22px var(--shadow);
+  opacity: 0; visibility: hidden; transform: translate(-50%, 6px);
+  transition: opacity .2s ease, transform .2s ease, visibility .2s;
+}
+.nav .sub::before { content: ""; position: absolute; left: 0; right: 0; top: -18px; height: 18px; } /* мост, чтобы меню не пропадало */
+.nav .has-sub:hover .sub, .nav .has-sub:focus-within .sub, .nav .has-sub.open .sub {
+  opacity: 1; visibility: visible; transform: translate(-50%, 0);
+}
+.nav .sub a { display: block; padding: 13px 18px; border: 0; text-align: center; white-space: nowrap; }
+.nav .sub a:hover, .nav .sub a:focus-visible { background: var(--paper); color: var(--gold-deep); }
+.nav .sub a[aria-current="page"] { color: var(--gold-deep); background: var(--paper); }
+a.plain { color: inherit; border-bottom: 1px solid var(--gold); text-decoration: none; }
+.note a { color: var(--gold-deep); }
+
+/* ---------- Расписание: таблица для планшетов и компьютеров, карточки для телефонов ---------- */
+.sched-wrap { padding: 14px; background: var(--bg); }
+table.sched { width: 100%; border-collapse: collapse; table-layout: fixed; font-size: 1.06rem; line-height: 1.45; }
+.sched col.c-date { width: 15%; } .sched col.c-time { width: 9%; } .sched col.c-svc { width: 40%; } .sched col.c-note { width: 36%; }
+.sched th, .sched td { border: 1px solid var(--line); padding: 11px 14px; vertical-align: middle; text-align: center; }
+.sched thead th { background: var(--beige); padding: 13px 10px; font: 500 0.72rem/1.2 var(--text); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-ink); }
+.sched tbody th { font-weight: 400; background: var(--bg); }
+.sched th.red { background: var(--paper); }
+.dn { display: block; font: 600 1.2rem/1.2 var(--display); }
+.dw { display: block; margin-top: 3px; font: 500 0.7rem/1.3 var(--text); letter-spacing: 0.16em; text-transform: uppercase; color: var(--ink-soft); }
+.red .dn, .red .dw { color: var(--gold-ink); }
+.sched td.t, .day-rows .t { font-variant-numeric: tabular-nums; font-weight: 500; white-space: nowrap; }
+.sched td.t.tr, .day-rows .t.tr { color: var(--gold-ink); font-weight: 600; }
+.ln { display: block; }
+.s-b { font-weight: 600; } .s-r { font-weight: 600; color: var(--gold-ink); }
+.sched td.n { background: var(--paper); font-style: normal; font-weight: 500; color: var(--ink); }
+.sched td.n.r { color: var(--gold-ink); font-weight: 600; }
+.is-today { box-shadow: inset 0 0 0 2px var(--gold); }
+.today-badge { display: block; margin-top: 8px; padding: 4px 6px; border-radius: 2px; background: var(--gold-deep); color: #fff; font: 600 0.62rem/1.2 var(--text); letter-spacing: 0.2em; text-transform: uppercase; }
+.day-h .today-badge { display: inline-block; margin: 0 0 0 auto; align-self: center; }
+
+.sched-cards { display: none; }
+.day { background: var(--bg); border: 1px solid var(--line); border-radius: 2px; overflow: hidden; }
+.day-h { display: flex; align-items: baseline; gap: 12px; padding: 14px 18px; background: var(--beige); border-bottom: 1px solid var(--line); }
+.day-h.red { background: var(--paper); }
+.day-h .dn { display: inline; }
+.day-h .dw { display: inline; margin: 0; }
+.day-rows { margin: 0; padding: 0; list-style: none; }
+.day-rows li { display: grid; grid-template-columns: 62px minmax(0, 1fr); gap: 12px; padding: 12px 18px; border-top: 1px solid var(--line); line-height: 1.45; }
+.day-rows li:first-child { border-top: 0; }
+.day-rows li.n { background: var(--paper); font-style: normal; font-weight: 500; color: var(--ink); font-size: 1rem; }
+.day-rows li.n.r { color: var(--gold-ink); font-weight: 600; }
+@media (max-width: 760px) {
+  .sched-wrap { display: none; }
+  .sched-cards { display: grid; gap: 16px; }
+}
+@media (min-width: 761px) and (max-width: 980px) {
+  table.sched { font-size: 0.95rem; }
+  .sched th, .sched td { padding: 9px 9px; }
+  .sched thead th { letter-spacing: 0.12em; padding-inline: 4px; }
+  .sched col.c-date { width: 17%; } .sched col.c-note { width: 34%; }
+}
+
+/* ---------- Новости на главной ---------- */
+.news-list { display: grid; gap: 28px; max-width: 1000px; margin-inline: auto; }
+.news-item { display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); align-items: stretch; padding: 14px; background: var(--bg); }
+.news-photo { margin: 0; min-height: 100%; }
+.news-photo a { display: block; height: 100%; overflow: hidden; }
+.news-photo img { display: block; width: 100%; height: 100%; object-fit: cover; outline: 1px solid var(--line); outline-offset: -1px; transition: transform .6s ease; }
+.news-photo a:hover img { transform: scale(1.03); }
+.news-body { display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: clamp(22px, 4vw, 40px); }
+.news-date { margin: 0 0 8px; font: 500 0.78rem/1.4 var(--text); letter-spacing: 0.24em; text-transform: uppercase; color: var(--gold-deep); }
+.news-body h3 { margin: 0 0 12px; font: 600 clamp(1.5rem, 3vw, 1.9rem)/1.2 var(--display); }
+.news-body p:not(.news-date) { margin: 0 0 18px; color: var(--ink-soft); }
+.more-link { font: 500 0.74rem/1 var(--text); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-deep); text-decoration: none; border-bottom: 1px solid var(--gold); padding-bottom: 6px; }
+.more-link:hover { color: var(--ink); }
+@media (max-width: 820px) {
+  .news-item { grid-template-columns: minmax(0, 1fr); }
+  .news-photo { min-height: 0; aspect-ratio: 4 / 3; }
+  .news-body { padding: 24px 12px 14px; }
+}
+
+/* ---------- Наши соцсети: справа вверху ----------
+   На компьютере блок стоит в правом верхнем углу шапки. На планшетах и телефонах
+   (до 1060px) уходит отдельным рядом над названием, справа. */
+[hidden] { display: none !important; }
+.top { position: relative; }
+.topbar { position: absolute; top: max(26px, env(safe-area-inset-top, 0px)); left: 0; right: 0; z-index: 5; display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; pointer-events: none; }
+.topbar > * { pointer-events: auto; }
+.social { display: flex; flex-direction: column; align-items: flex-end; gap: 6px; }
+.social-lbl { font: 400 0.92rem/1.2 var(--text); color: var(--ink-soft); }
+.social-list { display: flex; gap: 14px; }
+.soc { display: inline-flex; align-items: center; gap: 7px; text-decoration: none; color: var(--ink); font: 500 0.98rem/1 var(--text); }
+.soc-ic { display: block; width: 34px; height: 34px; flex: none; transition: transform .25s, filter .25s; }
+.soc-t { transition: color .25s; }
+.soc:hover .soc-ic { transform: translateY(-2px); filter: drop-shadow(0 6px 8px rgba(138,106,34,.28)); }
+.soc:hover .soc-t { color: var(--gold-deep); }
+.lv-btn { display: inline-flex; align-items: center; gap: 8px; cursor: pointer; background: var(--bg); color: var(--gold-ink); border: 1px solid var(--gold); border-radius: 2px; padding: 8px 12px; font: 500 0.9rem/1.2 var(--text); text-align: left; transition: background .25s, color .25s; }
+.lv-btn svg { width: 22px; height: 22px; flex: none; }
+.lv-btn:hover, .lv-btn[aria-pressed="true"] { background: var(--gold-deep); color: #fff; }
+@media (max-width: 1060px) {
+  .topbar { position: static; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+}
+@media (max-width: 520px) { .lv-btn-t { max-width: 9.5em; } }
+@media (prefers-reduced-motion: reduce) { .soc-ic, .soc-t { transition: none; } }
+
+/* ---------- Меню на телефонах и планшетах ----------
+   До 1060px пункты прячутся за кнопкой «Меню». Если скрипт не загрузился,
+   меню остаётся видимым, как на компьютере. */
+.nav-toggle { display: none; }
+@media (max-width: 1060px) {
+  html.js .nav-toggle {
+    display: inline-flex; align-items: center; gap: 12px; margin-top: 18px; padding: 13px 24px;
+    font: 500 0.8rem/1 var(--text); letter-spacing: 0.22em; text-transform: uppercase;
+    color: var(--gold-deep); background: transparent; border: 1px solid var(--gold); border-radius: 2px; cursor: pointer;
+  }
+  html.js .nav-toggle:hover { background: var(--beige); }
+  html.js .top { padding-bottom: 20px; }
+  .nav-toggle .bars { position: relative; width: 18px; height: 11px; border-block: 1px solid currentColor; }
+  .nav-toggle .bars::after { content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px; background: currentColor; }
+
+  html.js .nav { display: none; width: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-block: 14px 6px; }
+  html.js .nav.open { display: flex; }
+  html.js .nav a {
+    display: block; padding: 15px 8px; text-align: center; font-size: 0.82rem; letter-spacing: 0.16em;
+    border: 0; border-top: 1px solid var(--line);
+  }
+  html.js .nav a:hover, html.js .nav a[aria-current="page"] { border-top-color: var(--line); color: var(--gold-deep); background: var(--paper); }
+  html.js .nav .has-sub { display: block; }
+  html.js .nav .has-sub > a::after { display: none; }
+  html.js .nav .has-sub .sub, html.js .nav .has-sub:hover .sub,
+  html.js .nav .has-sub:focus-within .sub, html.js .nav .has-sub.open .sub {
+    position: static; min-width: 0; padding: 0; border: 0; box-shadow: none; background: transparent;
+    opacity: 1; visibility: visible; transform: none; transition: none;
+  }
+  html.js .nav .sub::before { display: none; }
+  html.js .nav .sub a { padding: 12px 8px; font-size: 0.74rem; letter-spacing: 0.14em; color: var(--ink-soft); background: var(--paper); }
+}
+@media (min-width: 1440px) { .wrap { max-width: 1200px; } }
+
+/* ---------- Главный экран ---------- */
+.hero {
+  overflow-x: clip;
+  display: grid; grid-template-columns: minmax(0, 1.1fr) minmax(0, 0.9fr);
+  gap: clamp(28px, 6vw, 72px); align-items: center;
+  padding-block: clamp(36px, 6vw, 72px) clamp(40px, 6vw, 80px);
+}
+.eyebrow { font: 500 0.82rem/1.4 var(--text); letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-deep); margin: 0; }
+h1 { font: 500 clamp(2.2rem, 5.4vw, 3.9rem)/1.08 var(--display); margin: 14px 0 0; text-wrap: balance; }
+h1 em { font-style: italic; color: var(--gold-deep); font-weight: 500; }
+.lead { max-width: 33em; color: var(--ink-soft); font-size: 1.2rem; margin: 22px 0 28px; }
+.actions { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 32px; }
+.btn {
+  display: inline-block; text-decoration: none; font: 500 0.82rem/1 var(--text); letter-spacing: 0.2em; text-transform: uppercase;
+  padding: 16px 28px; border-radius: 2px; border: 1px solid var(--gold-deep);
+  transition: background .3s ease, color .3s ease, box-shadow .3s ease;
+}
+.btn-fill { background: linear-gradient(180deg, #9A7A2E, #7E601C); color: #fff; }
+.btn-fill:hover { box-shadow: 0 10px 22px -12px var(--shadow); }
+.btn-line { color: var(--gold-deep); background: transparent; border-color: var(--gold); }
+.btn-line:hover { background: var(--beige); }
+
+/* Рамка с двойной линией, общая для карточек */
+.frame {
+  position: relative; background: var(--bg); border: 1px solid var(--line); border-radius: 2px;
+}
+.frame::after {
+  content: ""; position: absolute; inset: 6px; border: 1px solid var(--line); border-radius: 1px; pointer-events: none;
+}
+
+.feast { display: inline-block; padding: 16px 26px; background: var(--paper); max-width: 100%; }
+.feast .lbl { display: block; font: 500 0.7rem/1.2 var(--text); letter-spacing: 0.26em; text-transform: uppercase; color: var(--ink-soft); }
+.feast b { display: block; font: 600 1.35rem/1.25 var(--display); margin-top: 6px; }
+.feast .when { display: block; color: var(--gold-deep); font-size: 1rem; font-style: italic; margin-top: 2px; }
+
+/* ---------- Арка с храмом ----------
+   Фото храма без неба стоит в арочной раме. Купол и колокольня выходят
+   за верх арки (это делает маска у .arch-img). Слои сзади вперёд:
+   кольцо, рама, сияние, фото, подпись. */
+.arch {
+  position: relative; width: 100%; max-width: 440px; margin-inline: auto;
+  aspect-ratio: 3 / 4;
+  animation: floatBig 12s ease-in-out infinite;
+}
+.arch-ring, .arch-frame { position: absolute; }
+.arch-ring {
+  left: -4%; right: -4%; top: 13%; bottom: 0; z-index: 0;
+  border: 1px solid var(--line); border-bottom: 0;
+  border-radius: 50% 50% 0 0 / 46% 46% 0 0;
+}
+.arch-frame {
+  left: 0; right: 0; top: 17%; bottom: 0; z-index: 1;
+  border: 1px solid var(--gold); border-bottom: 0;
+  border-radius: 50% 50% 0 0 / 45% 45% 0 0;
+  background: linear-gradient(180deg, #FFFFFF, var(--beige));
+  box-shadow: 0 46px 70px -48px var(--shadow);
+}
+.arch-sun {
+  position: absolute; z-index: 2; left: 12%; top: 5%; width: 70%; aspect-ratio: 1;
+  border-radius: 50%; pointer-events: none;
+  background: radial-gradient(circle, var(--glow) 0%, transparent 66%);
+  animation: breathe 10s ease-in-out infinite;
+}
+.arch-img {
+  position: absolute; z-index: 3; inset: 0; width: 100%; height: 100%; display: block; object-fit: cover;
+  /* Показываем арку целиком и узкий «прорыв» вверх для колокольни и купола */
+  -webkit-mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000), radial-gradient(ellipse 50% 37.35% at 50% 54.35%, #000 99%, transparent 100%);
+          mask-image: linear-gradient(#000, #000), linear-gradient(#000, #000), radial-gradient(ellipse 50% 37.35% at 50% 54.35%, #000 99%, transparent 100%);
+  -webkit-mask-size: 22% 32%, 100% 46%, 100% 100%;
+          mask-size: 22% 32%, 100% 46%, 100% 100%;
+  -webkit-mask-position: 54% 0, 0 100%, 0 0;
+          mask-position: 54% 0, 0 100%, 0 0;
+  -webkit-mask-repeat: no-repeat;
+          mask-repeat: no-repeat;
+}
+.arch-cap {
+  position: absolute; z-index: 4; left: 50%; bottom: -18px; translate: -50% 0;
+  background: var(--bg); border: 1px solid var(--gold); border-radius: 2px;
+  padding: 8px 26px 7px; text-align: center; white-space: nowrap;
+}
+.arch-cap small { display: block; font: 500 0.64rem/1.2 var(--text); letter-spacing: 0.28em; text-transform: uppercase; color: var(--gold-deep); }
+.arch-cap b { display: block; font: 600 1.15rem/1.2 var(--display); letter-spacing: 0.08em; }
+
+@keyframes breathe { 0%, 100% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.06); opacity: 0.75; } }
+@keyframes floatBig { 0%, 100% { transform: translate3d(0, 0, 0); } 50% { transform: translate3d(0, -10px, 0); } }
+
+@media (max-width: 820px) {
+  .hero { grid-template-columns: minmax(0, 1fr); text-align: center; }
+  .hero .orn.left { margin-inline: auto; }
+  .hero .orn.left::before { display: block; }
+  .lead { margin-inline: auto; }
+  .actions { justify-content: center; }
+  .arch { max-width: 320px; order: -1; margin-bottom: 18px; }
+}
+
+/* ---------- Разделы ---------- */
+.sec { padding-block: clamp(48px, 7vw, 88px); }
+.band { background: var(--paper); border-block: 1px solid var(--line); }
+
+.sec-head { text-align: center; max-width: 40em; margin: 0 auto clamp(30px, 4.5vw, 52px); }
+h2, .page-title { font: 500 clamp(1.9rem, 4.2vw, 2.8rem)/1.12 var(--display); margin: 10px 0 0; text-wrap: balance; }
+main { min-height: 62vh; }
+.sec-head .eyebrow { margin: 0; }
+
+.grid { display: grid; gap: 24px; grid-template-columns: repeat(auto-fit, minmax(min(260px, 100%), 1fr)); }
+.card { padding: 34px 28px 32px; text-align: center; }
+.card h3 { font: 600 1.5rem/1.2 var(--display); margin: 10px 0 12px; }
+.card p { margin: 0 0 20px; color: var(--ink-soft); font-size: 1.05rem; }
+.kicker { font: 500 0.72rem/1.2 var(--text); letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-deep); }
+.pill { display: inline-block; font: 500 0.72rem/1 var(--text); letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep); border: 1px solid var(--line); border-radius: 2px; padding: 9px 14px; background: var(--paper); }
+.card .big-date { font: 500 clamp(2.4rem, 5vw, 3.2rem)/1 var(--display); color: var(--gold-deep); margin: 0 0 10px; }
+/* Вступление на внутренних страницах */
+.intro { max-width: 40em; margin: 0 auto 38px; text-align: center; color: var(--ink-soft); font-size: 1.2rem; }
+
+/* Плитки-ссылки на главной: три в ряд */
+.grid-3 { grid-template-columns: repeat(auto-fit, minmax(min(300px, 100%), 1fr)); }
+a.tile { display: block; text-decoration: none; color: inherit; transition: border-color .3s, box-shadow .3s, transform .3s; }
+a.tile:hover { border-color: var(--gold); box-shadow: 0 18px 34px -22px var(--shadow); transform: translateY(-3px); }
+a.tile .more { display: inline-block; margin-top: 4px; font: 500 0.72rem/1 var(--text); letter-spacing: 0.22em; text-transform: uppercase; color: var(--gold-deep); border-bottom: 1px solid var(--gold); padding-bottom: 5px; }
+.note { margin: 28px auto 0; text-align: center; color: var(--ink-soft); font-style: italic; max-width: 40em; }
+
+.about { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+.about .sec-head { text-align: left; margin: 0 0 22px; }
+.about p { margin: 0 0 16px; max-width: 36em; }
+.about p:last-child { margin-bottom: 0; }
+.tropar { margin: 0; padding: clamp(30px, 4vw, 44px); background: var(--paper); text-align: center; }
+.tropar .lbl { font: 500 0.72rem/1.4 var(--text); letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-deep); margin: 0; }
+.tropar blockquote { margin: 18px 0 0; font: italic 500 clamp(1.2rem, 2.3vw, 1.45rem)/1.55 var(--display); }
+@media (max-width: 820px) {
+  .about { grid-template-columns: minmax(0, 1fr); }
+  .about .sec-head { text-align: center; }
+  .about .orn.left { margin-inline: auto; }
+  .about .orn.left::before { display: block; }
+  .about p { margin-inline: auto; }
+}
+
+.band .tropar { background: var(--bg); }
+
+/* ---------- Фотографии ----------
+   Лёгкая пропорция колонок 1 к 2 выравнивает высоту вертикального
+   и горизонтального снимков. */
+.gallery { display: grid; grid-template-columns: minmax(0, 0.5fr) minmax(0, 1fr); gap: 28px; align-items: start; }
+.photo { margin: 0; padding: 14px; }
+.photo a { display: block; overflow: hidden; }
+.photo img { display: block; width: 100%; height: auto; outline: 1px solid var(--line); outline-offset: -1px; transition: transform .6s ease; }
+.photo a:hover img { transform: scale(1.03); }
+.photo figcaption { padding: 14px 4px 4px; text-align: center; font-style: italic; color: var(--ink-soft); font-size: 1rem; }
+@media (max-width: 760px) { .gallery { grid-template-columns: minmax(0, 1fr); } }
+
+.lightbox {
+  position: fixed; inset: 0; z-index: 100; display: flex; align-items: center; justify-content: center;
+  background: rgba(32, 26, 14, 0.92);
+  padding: max(56px, calc(env(safe-area-inset-top, 0px) + 48px)) max(16px, env(safe-area-inset-right, 0px)) max(16px, env(safe-area-inset-bottom, 0px)) max(16px, env(safe-area-inset-left, 0px));
+}
+.lightbox[hidden] { display: none; }
+.lightbox img { display: block; max-width: 100%; max-height: 100%; width: auto; height: auto; object-fit: contain; border: 1px solid rgba(232, 220, 192, 0.5); }
+.lightbox-close {
+  position: absolute; top: max(14px, calc(env(safe-area-inset-top, 0px) + 10px)); right: max(16px, env(safe-area-inset-right, 0px));
+  font: 500 0.78rem/1 var(--text); letter-spacing: 0.2em; text-transform: uppercase;
+  color: #FBF7EE; background: transparent; border: 1px solid rgba(232, 220, 192, 0.6); border-radius: 2px; padding: 12px 18px; cursor: pointer;
+}
+.lightbox-close:hover { background: rgba(232, 220, 192, 0.15); }
+
+dl.contacts { margin: 0; text-align: center; }
+dl.contacts div { padding-block: 18px; border-bottom: 1px solid var(--line); }
+dl.contacts div:first-child { padding-top: 0; }
+dl.contacts div:last-child { border-bottom: 0; padding-bottom: 0; }
+dl.contacts dt { font: 500 0.74rem/1.5 var(--text); letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-deep); }
+dl.contacts dd { margin: 4px 0 0; color: var(--ink); font-size: 1.2rem; overflow-wrap: anywhere; }
+dl.contacts dd a { text-decoration: none; border-bottom: 1px solid var(--gold); transition: color .25s; }
+dl.contacts dd a:hover { color: var(--gold-deep); }
+.map-row { text-align: center; margin-top: 30px; }
+.contact-card { max-width: 640px; margin-inline: auto; padding: 36px clamp(22px, 5vw, 48px); }
+
+footer { padding-block: 40px max(40px, env(safe-area-inset-bottom, 0px)); text-align: center; color: var(--ink-soft); font-size: 0.95rem; }
+footer em { display: block; margin-top: 16px; font: italic 500 1.35rem/1.3 var(--display); color: var(--gold-deep); }
+footer .orn { margin-bottom: 22px; }
+
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .arch, .arch-sun { animation: none; }
+  .btn, .nav a, a.tile, .nav .sub { transition: none; }
+  a.tile:hover { transform: none; }
+}
+
+/* ---------- Главная: ближайшая служба и часы работы ---------- */
+.sr-only { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; padding: 0; }
+.info { display: grid; gap: 22px; }
+.next-svc { padding: 28px 30px 26px; background: var(--paper); }
+.next-svc .lbl, .hours .lbl { display: block; font: 500 0.74rem/1.2 var(--text); letter-spacing: 0.26em; text-transform: uppercase; color: var(--gold-ink); }
+.next-body { display: grid; gap: 6px; margin: 12px 0 14px; }
+.next-when { font: 500 1.1rem/1.3 var(--text); color: var(--ink-soft); }
+.next-time { font: 600 clamp(2.4rem, 5vw, 3.2rem)/1 var(--display); color: var(--gold-ink); }
+.next-name { font: 500 1.25rem/1.35 var(--display); color: var(--ink); }
+.next-name .ln { display: block; }
+.next-name .s-r { color: var(--gold-ink); }
+.next-note { font: 500 1rem/1.4 var(--text); color: var(--ink); }
+.hours-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.hours { padding: 22px 24px; }
+.hours b { display: block; font: 600 1.9rem/1.1 var(--display); color: var(--gold-ink); margin: 10px 0 6px; }
+.hours p { margin: 0; color: var(--ink-soft); font-size: 1rem; }
+@media (max-width: 520px) { .hours-grid { grid-template-columns: minmax(0, 1fr); } .next-svc { padding: 24px 22px; } }
+.big-time { font: 600 clamp(2rem, 4.5vw, 2.6rem)/1.1 var(--display); color: var(--gold-ink); margin: 6px 0 0; }
+/* Требы и таинства */
+.treby { display: grid; gap: 26px; }
+.t-block { padding: 34px clamp(22px, 4vw, 44px) 32px; }
+.t-block .kicker { display: block; text-align: center; }
+.t-block h2 { font: 600 clamp(1.7rem, 3.4vw, 2.2rem)/1.2 var(--display); text-align: center; margin: 8px 0 20px; }
+.t-list { list-style: none; margin: 0 auto; padding: 0; max-width: 40rem; }
+.t-list li { display: flex; align-items: baseline; justify-content: space-between; gap: 18px; padding: 13px 0; border-top: 1px solid var(--line); font-size: 1.15rem; }
+.t-list li:first-child { border-top: 0; }
+.t-list .tn { color: var(--ink); }
+.t-list .tp { color: var(--gold-ink); font-weight: 600; white-space: nowrap; }
+.t-note { text-align: center; color: var(--ink-soft); margin: 14px 0 0; font-size: 1.1rem; }
+@media (max-width: 520px) { .t-list li { flex-wrap: wrap; gap: 2px 14px; } }
+a.plain[href^="tel"] { white-space: nowrap; }
+
+/* ---------- Версия для слабовидящих ---------- */
+.lv-panel { background: var(--paper); border-bottom: 2px solid var(--gold-deep); }
+.lv-in { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(15rem, 100%), 1fr)); gap: 16px 28px; align-items: end; padding-block: 16px; }
+.lv-grp { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.lv-lbl { font: 600 0.95rem/1.2 var(--text); color: var(--ink); }
+.lv-seg { display: flex; }
+.lv-panel button { cursor: pointer; background: var(--bg); color: var(--ink); border: 1px solid var(--gold-deep); padding: 8px 12px; font: 500 1rem/1.2 var(--text); min-height: 44px; }
+.lv-seg button { flex: 1 1 0; min-width: 0; margin-left: -1px; border-radius: 0; }
+.lv-seg button:first-child { margin-left: 0; border-radius: 3px 0 0 3px; }
+.lv-seg button:last-child { border-radius: 0 3px 3px 0; }
+.lv-seg i { font-style: normal; font-weight: 600; line-height: 1; }
+.lv-panel button[aria-pressed="true"] { background: var(--ink); color: var(--bg); position: relative; z-index: 1; }
+.lv-panel .lv-off { border-radius: 3px; font-weight: 600; }
+html.lv { font-size: 125%; --display: Arial, Helvetica, sans-serif; --text: Arial, Helvetica, sans-serif; }
+html.lv.lv-s2 { font-size: 150%; }
+html.lv.lv-s3 { font-size: 175%; }
+html.lv-light { --bg: #fff; --paper: #fff; --beige: #fff; --beige-deep: #eee; --ink: #000; --ink-soft: #000; --gold: #000; --gold-deep: #000; --gold-ink: #000; --line: #000; --shadow: transparent; --glow: transparent; }
+html.lv body { line-height: 1.6; }
+html.lv *, html.lv *::before, html.lv *::after { letter-spacing: normal !important; animation: none !important; transition: none !important; font-style: normal !important; }
+html.lv .frame::after, html.lv .arch-sun, html.lv .arch-ring, html.lv .arch-frame { display: none; }
+html.lv main a:not(.btn):not(.photo-link) { text-decoration: underline; }
+html.lv .btn-fill { background: var(--ink); color: var(--bg); border-color: var(--ink); }
+html.lv .today-badge { background: var(--ink); color: var(--bg); }
+html.lv .lv-btn, html.lv .lv-btn:hover { background: var(--ink); color: var(--bg); }
+html.lv .nav { flex-wrap: wrap; justify-content: center; }
+html.lv-noimg img:not(.soc-ic), html.lv-noimg .arch { display: none !important; }
+html.lv-noimg .hero { grid-template-columns: minmax(0, 1fr); }
+html.lv .topbar { position: static; margin-bottom: 16px; flex-wrap: wrap; align-items: center; }
+html.lv .topbar { width: 100%; } @media (max-width: 1060px) { .topbar { width: 100%; } }
+
+.card .big-time { font: 600 clamp(2rem, 4.5vw, 2.6rem)/1.1 var(--display); color: var(--gold-ink); margin: 6px 0 0; }
+
+.t-list .tp-soft { font-weight: 500; font-size: 1rem; text-align: right; white-space: normal; }
+.t-note { border-top: 1px solid var(--line); padding-top: 16px; max-width: 40rem; margin-inline: auto; }
+@media (max-width: 520px) { .t-list .tp { white-space: normal; } .t-list .tp-soft { text-align: left; } }
+
+html { color-scheme: light only; }
+
+/* ---------- Молодёжное движение: карусель фотографий и текст ---------- */
+.slider-frame { padding: 14px; max-width: 920px; margin: 0 auto clamp(32px, 5vw, 52px); }
+.slider { position: relative; }
+.slides { display: flex; overflow-x: auto; scroll-snap-type: x mandatory; scrollbar-width: none; overscroll-behavior-x: contain; }
+.slides::-webkit-scrollbar { display: none; }
+.slides:focus-visible { outline: 2px solid var(--gold-deep); outline-offset: 4px; }
+.slide { flex: 0 0 100%; scroll-snap-align: center; scroll-snap-stop: always; aspect-ratio: 4 / 3; display: block; background: var(--beige); overflow: hidden; }
+.slide img { display: block; width: 100%; height: 100%; object-fit: cover; }
+.slide.fit-contain img { object-fit: contain; }
+.sl-btn {
+  position: absolute; top: 50%; transform: translateY(-50%); z-index: 2; width: 46px; height: 46px; padding: 0; cursor: pointer;
+  border-radius: 50%; border: 1px solid var(--gold); background: rgba(255, 255, 255, 0.92); color: var(--gold-deep);
+  display: grid; place-items: center; transition: background .25s, color .25s;
+}
+.sl-btn::before { content: ""; width: 11px; height: 11px; border: solid currentColor; border-width: 0 0 2px 2px; display: block; }
+.sl-prev { left: 12px; } .sl-prev::before { transform: translateX(2px) rotate(45deg); }
+.sl-next { right: 12px; } .sl-next::before { transform: translateX(-2px) rotate(-135deg); }
+.sl-btn:hover { background: var(--gold-deep); color: #fff; }
+.sl-count { position: absolute; right: 12px; bottom: 12px; margin: 0; padding: 3px 12px; background: rgba(255, 255, 255, 0.92); border: 1px solid var(--line); font: 500 0.95rem/1.5 var(--text); color: var(--ink); }
+.prose { max-width: 46rem; margin-inline: auto; }
+.prose p { margin: 0 0 1.1em; font-size: 1.2rem; color: var(--ink); }
+.prose-end { text-align: center; margin-top: clamp(32px, 5vw, 56px); }
+.principles .card { text-align: left; padding: 30px 28px 28px; }
+.principles .card h3 { font-size: 1.35rem; margin-top: 0; }
+.principles .card p { margin: 0; }
+.youth-info { max-width: 800px; margin: clamp(28px, 4vw, 44px) auto 0; }
+.gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(260px, 100%), 1fr)); gap: 22px; }
+.gallery-grid .photo { padding: 10px; }
+.gallery-grid .photo img { aspect-ratio: 4 / 3; height: auto; object-fit: cover; }
+.gallery-grid .photo figcaption { font-size: 0.95rem; padding-top: 10px; }
+html.lv .sl-btn, html.lv .sl-count { background: var(--bg); color: var(--ink); border-color: var(--ink); }
+html.lv .sl-btn:hover { background: var(--ink); color: var(--bg); }
+@media (prefers-reduced-motion: no-preference) { .slides { scroll-behavior: smooth; } }
+.principles { display: flex; flex-wrap: wrap; justify-content: center; gap: 24px; }
+.principles .card { flex: 1 1 280px; max-width: calc(33.333% - 16px); }
+@media (max-width: 960px) { .principles .card { max-width: calc(50% - 12px); } }
+@media (max-width: 640px) { .principles .card { max-width: 100%; flex-basis: 100%; } }
+
+.yi-side { display: none; }
+@media (min-width: 961px) { .yi-side { display: grid; } }
+
+/* ---------- Молодёжь: заголовок справа над карточками ---------- */
+.yl-aside .sec-head { margin: 0 auto 24px; }
+@media (min-width: 961px) {
+  .yl-photos { display: grid; grid-template-columns: minmax(0, 3fr) minmax(0, 2fr); gap: clamp(24px, 3vw, 40px); align-items: stretch; margin-bottom: clamp(32px, 5vw, 56px); }
+  .yl-photos .slider-frame { max-width: none; margin: 0; align-self: start; }
+  .yl-aside { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+  .yl-aside .sec-head { margin-bottom: 20px; }
+  .yl-aside h1 { font-size: clamp(1.9rem, 3vw, 2.6rem); }
+  .yi-bottom { display: none; }
+  .yi-side { max-width: none; margin: 0; grid-template-columns: minmax(0, 1fr); gap: 16px; }
+  .yi-side .card { padding: 18px 22px; }
+  .yi-side .card h3 { margin: 6px 0 8px; }
+  .yi-side .card p { margin: 0; }
+}
+@media (max-width: 960px) { .yl-photos { display: flex; flex-direction: column; } .yl-aside { order: -1; } }
+
+/* ---------- Фотографии: альбомы ---------- */
+.albums { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 340px)); justify-content: center; gap: 28px; }
+.album-card { display: block; text-decoration: none; color: inherit; padding: 10px; background: var(--paper); transition: transform .3s ease, box-shadow .3s ease; }
+.album-card:hover { transform: translateY(-3px); box-shadow: 0 16px 30px -22px var(--shadow); }
+.album-card img { display: block; width: 100%; height: auto; aspect-ratio: 4 / 3; object-fit: cover; }
+.ac-t { display: block; text-align: center; padding: 14px 8px 8px; }
+.ac-t b { display: block; font: 600 1.35rem/1.2 var(--display); color: var(--ink); }
+.ac-t small { display: block; margin-top: 6px; font: 500 0.82rem/1.2 var(--text); letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold-deep); }
+.album-bar { text-align: center; margin-bottom: clamp(24px, 4vw, 40px); }
+.album-bar h2 { font: 500 clamp(1.8rem, 4vw, 2.6rem)/1.15 var(--display); margin: 14px 0 0; text-wrap: balance; }
+.album-back { display: inline-block; font: 500 0.82rem/1 var(--text); letter-spacing: 0.18em; text-transform: uppercase; color: var(--gold-deep); text-decoration: none; padding: 12px 18px; border: 1px solid var(--gold); border-radius: 2px; }
+.album-back:hover { background: var(--gold-deep); color: #fff; }
+html.lv .album-back:hover { background: var(--ink); color: var(--bg); }
+html:not(.albums-on) .album-back { display: none; }
+
+.vh { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
+
+main > .sec:first-child, main > section.sec:first-child { padding-top: clamp(20px, 1.9vw, 28px); }
+
+/* Меньше пустого места под шапкой */
+header.wrap::after { content: ""; display: block; width: 100vw; margin-left: calc(50% - 50vw); height: 3px; border-block: 1px solid var(--line); margin-bottom: clamp(8px, 1.5vw, 16px); }
+html, body { overflow-x: clip; }
+.nav { padding-block: 14px 8px; }
+main > .hero { padding-top: clamp(4px, 1.5vw, 16px); }
+@media (min-width: 901px) { main > .hero { align-items: start; margin-top: -70px; } .hero .info { margin-top: clamp(40px, 5vw, 72px); } }
+
+
+
+  padding: 22px 0;
+  background:
+    radial-gradient(ellipse at 50% 0%, #8C2A47 0%, transparent 70%),
+    linear-gradient(180deg, #6E1730, #43091A);
+  border: 2px solid #D9B45A; box-shadow: 0 0 0 4px #FFFFFF, 0 0 0 5px #721A33, 0 18px 30px -22px rgba(71, 11, 28, .8); }
+  background: linear-gradient(100deg, transparent, rgba(255, 233, 160, .28), transparent); animation: pfShine 7s ease-in-out infinite; }
+@keyframes pfShine { 0%, 55% { left: -50%; } 100% { left: 130%; } }
+
+
+/* Воскресная школа: три карточки справа и четыре принципа 2×2 */
+@media (min-width: 641px) { .principles.p4 .card { max-width: calc(50% - 12px); flex-basis: calc(50% - 12px); } }
+.youth-info.school-info { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.school-info .card:last-child { grid-column: 1 / -1; }
+.school-info .big-time { font-size: clamp(1.7rem, 3vw, 2.2rem); }
+@media (min-width: 961px) { .yi-side.school-info { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; } .yi-side.school-info .card { padding: 16px 14px; } }
+@media (max-width: 520px) { .youth-info.school-info { grid-template-columns: minmax(0, 1fr); } }
+
+/* ---------- Под крылом ангела ---------- */
+.angel { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); gap: clamp(28px, 5vw, 64px); align-items: center; max-width: 1000px; margin-inline: auto; }
+.angel-logo { margin: 0; padding: clamp(16px, 3vw, 32px); background: #fff; }
+.angel-logo img { display: block; width: 100%; height: auto; }
+.angel-text p { margin: 0 0 1.1em; font-size: 1.25rem; color: var(--ink); }
+.angel-text .angel-hi { font: 600 clamp(1.7rem, 3.2vw, 2.3rem)/1.2 var(--display); margin-bottom: 0.7em; }
+.angel-text .angel-btn { margin: 1.6em 0 0; }
+@media (max-width: 800px) { .angel { grid-template-columns: minmax(0, 1fr); } .angel-logo { max-width: 460px; margin-inline: auto; } .angel-text { text-align: center; } }
+html.lv .angel-logo { background: #fff; }
+
+@media (min-width: 1061px) { .nav { gap: 6px 17px; } .nav a { letter-spacing: 0.09em; font-size: 0.74rem; } }
+
+/* Храм целиком внутри арки (без «прорыва» вверх) */
+.arch-img { inset: 17% 0 0 0; height: 83%;
+  -webkit-mask-image: linear-gradient(#000, #000), radial-gradient(ellipse 50% 45% at 50% 45%, #000 99%, transparent 100%);
+          mask-image: linear-gradient(#000, #000), radial-gradient(ellipse 50% 45% at 50% 45%, #000 99%, transparent 100%);
+  -webkit-mask-size: 100% 55%, 100% 100%; mask-size: 100% 55%, 100% 100%;
+  -webkit-mask-position: 0 100%, 0 0; mask-position: 0 100%, 0 0; }
+
+/* Главное фото: вырезанный храм без неба, крест не обрезается */
+.arch-img { inset: auto 6% 0 6% !important; width: 88% !important; height: 90% !important; object-fit: contain !important; object-position: 50% 100%;
+  -webkit-mask-image: none !important; mask-image: none !important; filter: drop-shadow(0 14px 18px rgba(60, 40, 10, .18)); }
+.gallery { grid-template-columns: repeat(auto-fit, minmax(min(280px, 100%), 1fr)); }
+.gallery .photo img { width: 100%; height: auto; }
+
+/* Купол не заходит под шапку: убираем подтягивание вверх */
+@media (min-width: 901px) { main > .hero { margin-top: -44px; padding-top: 24px; } .hero .info { margin-top: clamp(24px, 4vw, 56px); } }
+.arch { overflow: visible; }
+
+/* статус «Храм открыт / закрыт» */
+.hours .status { display: block; margin: 10px 0 0; font: 500 1.05rem/1.3 var(--text); min-height: 1.3em; }
+.hours .status strong { font-weight: 600; }
+.hours .status.is-open { color: #2F6B3A; }
+.hours .status.is-closed { color: #B3261E; }
+.hours .status + b { margin-top: 6px; }
+html.lv-dark .hours .status.is-open { color: #7FE08F; }
+html.lv-dark .hours .status.is-closed { color: #FF8A80; }
+
+/* ---------- Вид приложения на телефоне (до 760px) ----------
+   Закреплённая шапка: название слева, круглая кнопка с тремя полосками справа,
+   меню раскрывается панелью под шапкой. Версии для слабовидящих здесь нет. */
+.nav-app { display: none; }
+@media (max-width: 760px) {
+  html.js .lv-btn, html.js .topbar { display: none; }
+  html.js header.wrap { position: sticky; top: 0; z-index: 60; background: var(--bg); padding-top: env(safe-area-inset-top, 0px); }
+  html.js .top { display: flex; flex-direction: row; flex-wrap: wrap; align-items: center; justify-content: space-between; text-align: left; padding: 8px 0 10px; position: static; }
+  html.js .brand { flex: 1; min-width: 0; flex-direction: row; align-items: center; justify-content: flex-start; gap: 10px; text-align: left; }
+  html.js .brand svg { width: 16px; height: 30px; flex: none; margin: 0; }
+  html.js .brand b { font-size: 0.82rem; letter-spacing: 0.08em; line-height: 1.2; }
+  html.js .brand small { display: none; }
+  html.js .nav-toggle {
+    margin: 0; padding: 0; width: 46px; height: 46px; border-radius: 50%; justify-content: center; flex: none;
+    background: var(--bg); border: 1.5px solid var(--gold);
+  }
+  html.js .nav-toggle .lbl { display: none; }
+  html.js .nav-toggle .bars { width: 20px; height: 14px; border: 0; border-top: 2px solid currentColor; border-bottom: 2px solid currentColor; }
+  html.js .nav-toggle .bars::after { height: 2px; }
+  html.js .nav-toggle[aria-expanded="true"] { background: var(--gold-deep); color: #fff; border-color: var(--gold-deep); }
+  html.js .nav {
+    position: absolute; left: 0; right: 0; top: 100%; width: auto; padding: 6px 16px 14px; background: var(--bg);
+    border-bottom: 1px solid var(--gold); box-shadow: 0 18px 28px rgba(60, 45, 10, 0.14);
+    max-height: calc(100vh - 70px - env(safe-area-inset-top, 0px)); overflow-y: auto;
+  }
+  html.js .nav a { text-align: left; padding: 15px 6px; font-size: 0.86rem; }
+  html.js .nav .sub a { padding-left: 22px; }
+  html.js .nav-app { display: block; margin-top: 8px; padding-top: 6px; border-top: 1px solid var(--line); }
+  html.js .nav-soc { display: flex; gap: 12px; flex-wrap: wrap; padding: 10px 0 4px; }
+  html.js .nav .nav-soc .soc { display: inline-flex; align-items: center; gap: 8px; padding: 0; border: 0; background: transparent; letter-spacing: 0.04em; text-transform: none; font-size: 1rem; }
+  .nav-install { width: 100%; margin-top: 8px; padding: 14px; cursor: pointer; font: 500 0.8rem/1 var(--text); letter-spacing: 0.16em; text-transform: uppercase; color: #fff; background: var(--gold-deep); border: 0; border-radius: 2px; }
+  .nav-install[hidden], .install-hint[hidden] { display: none; }
+  .install-hint { margin: 10px 4px 0; font-size: 0.95rem; line-height: 1.45; color: var(--ink-soft); }
+  main { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+  footer.wrap { padding-bottom: calc(24px + env(safe-area-inset-bottom, 0px)); }
+}
+/* в установленном приложении кнопка установки не нужна */
+@media (display-mode: standalone) { .nav-install, .install-hint { display: none !important; } }
+html { -webkit-tap-highlight-color: transparent; }
+
+/* Таинства: по нажатию раскрывается пояснение */
+.t-hint { margin: -4px auto 14px; max-width: 40rem; text-align: center; font-size: 0.98rem; color: var(--ink-soft); }
+.t-list li.sac { display: block; padding: 0; }
+.sac details { width: 100%; }
+.sac summary { display: flex; align-items: center; justify-content: space-between; gap: 14px; padding: 14px 4px; cursor: pointer; list-style: none; color: var(--ink); }
+.sac summary::-webkit-details-marker { display: none; }
+.sac summary::after { content: ""; flex: none; width: 9px; height: 9px; border-right: 1.5px solid var(--gold-deep); border-bottom: 1.5px solid var(--gold-deep); transform: rotate(45deg); margin-bottom: 3px; transition: transform .25s; }
+.sac details[open] summary::after { transform: rotate(-135deg); margin-bottom: -3px; }
+.sac summary:hover .tn, .sac details[open] .tn { color: var(--gold-deep); }
+.sac summary:focus-visible { outline: 2px solid var(--gold); outline-offset: 2px; }
+.sac-body { margin: 0 0 14px; padding: 14px 18px; background: var(--paper); border-left: 3px solid var(--gold); text-align: left; }
+.sac-body p { margin: 0 0 8px; font-size: 1.02rem; line-height: 1.55; color: var(--ink); }
+.sac-body p:last-child { margin-bottom: 0; }
+.sac-body .sac-n { font-size: 0.95rem; color: var(--ink-soft); font-style: italic; }
+html.lv .sac-body { background: var(--bg); border-left-color: var(--ink); }
+.sac-body strong { color: var(--gold-ink); font-weight: 600; }
+.sac-body .sac-src { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--line); font-size: 0.9rem; color: var(--ink-soft); }
+.sac-body .sac-src a { color: var(--gold-deep); text-decoration: underline; text-underline-offset: 2px; }
+.sac-body { overflow-wrap: anywhere; min-width: 0; }
+.sac-body .sac-src a { display: inline; }
+.admin-link { text-align: center; margin: 34px 0 0; font-size: 0.85rem; } .admin-link a { color: var(--ink-soft); text-decoration: underline; text-underline-offset: 3px; opacity: .7; } .admin-link a:hover { opacity: 1; color: var(--gold-deep); }

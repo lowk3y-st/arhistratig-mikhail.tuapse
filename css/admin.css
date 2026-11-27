@@ -1,0 +1,30 @@
+body.admin { background: var(--bg); color: var(--ink); font-family: var(--text); }
+.adm-top { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px max(16px, env(safe-area-inset-left, 0px)); border-bottom: 3px double var(--line); background: var(--bg); position: sticky; top: 0; z-index: 10; }
+.adm-top b { font: 600 1.15rem/1.2 var(--display); letter-spacing: .06em; }
+.adm-site, .adm-top button { font-size: .95rem; color: var(--gold-deep); background: none; border: 0; cursor: pointer; text-decoration: none; font-family: inherit; }
+.adm-wrap { max-width: 860px; margin: 0 auto; padding: 24px max(16px, env(safe-area-inset-left, 0px)) 80px; }
+.adm-card { padding: 22px 24px; margin-bottom: 20px; }
+.adm-card h2, .adm-wrap h2 { font: 600 1.5rem/1.2 var(--display); margin: 0 0 12px; }
+.adm-card h3 { font: 600 1.15rem/1.2 var(--display); margin: 0 0 10px; }
+.adm-form { display: grid; gap: 14px; }
+.adm-form label, .adm-field { display: grid; gap: 4px; font-size: .92rem; color: var(--ink-soft); }
+.adm-form input, .adm-form textarea, .adm-form select, .adm-field input, .adm-field textarea, .adm-field select, #out {
+  font: 400 1.05rem/1.4 var(--text); padding: 10px 12px; border: 1px solid var(--gold); border-radius: 2px; background: #fff; color: var(--ink); width: 100%; box-sizing: border-box; }
+.adm-field textarea, .adm-form textarea { min-height: 120px; resize: vertical; }
+.adm-tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 18px; }
+.adm-tabs button { padding: 10px 16px; font: 500 .95rem/1 var(--text); border: 1px solid var(--gold); background: var(--bg); color: var(--gold-ink); cursor: pointer; border-radius: 2px; }
+.adm-tabs button[aria-selected="true"] { background: var(--gold-deep); color: #fff; }
+.adm-row { display: flex; gap: 10px; flex-wrap: wrap; align-items: center; margin-top: 12px; }
+.adm-btn { padding: 11px 18px; font: 500 .95rem/1 var(--text); border: 1px solid var(--gold-deep); background: var(--gold-deep); color: #fff; cursor: pointer; border-radius: 2px; }
+.adm-btn.line { background: transparent; color: var(--gold-deep); }
+.adm-btn.del { background: transparent; color: #B3261E; border-color: #B3261E; }
+.adm-btn:disabled { opacity: .5; cursor: wait; }
+.adm-note { color: var(--ink-soft); font-size: .95rem; }
+.adm-ok { color: #2F6B3A; } .adm-err { color: #B3261E; }
+.adm-steps { padding-left: 20px; line-height: 1.55; }
+.adm-thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 10px; margin: 12px 0; }
+.adm-thumb { position: relative; border: 1px solid var(--line); background: var(--paper); }
+.adm-thumb img { display: block; width: 100%; aspect-ratio: 1; object-fit: cover; }
+.adm-thumb button { position: absolute; right: 4px; top: 4px; background: rgba(255,255,255,.92); color: #B3261E; border: 1px solid #B3261E; cursor: pointer; font-size: .8rem; padding: 3px 7px; border-radius: 2px; }
+.adm-item { border: 1px solid var(--line); padding: 14px; margin-bottom: 14px; background: var(--paper); display: grid; gap: 10px; }
+.adm-item img.cur { max-width: 160px; border: 1px solid var(--line); }
